@@ -1,0 +1,17 @@
+openssl_conf = openssl_init
+
+[openssl_init]
+providers = providers
+
+[providers]
+helloworld = helloworld_provider
+
+[helloworld_provider]
+identity = helloworld
+activate = 1
+
+something = "This is something"
+somesect = helloworld_subsect
+
+[helloworld_subsect]
+somemore = "This is some more"

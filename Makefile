@@ -9,6 +9,7 @@ helloworld.o: CFLAGS=-g -O0 -fPIC
 
 try:
 	OPENSSL_MODULES=. openssl list -provider helloworld -verbose
+	OPENSSL_CONF=./config.cnf OPENSSL_MODULES=. openssl list -verbose
 
 clean:
 	rm *.so *.o
