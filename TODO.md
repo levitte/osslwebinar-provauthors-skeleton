@@ -1,0 +1,11 @@
+- OSSL_provider_init
+- Built-in vs loadable module
+- Handling parameter requests
+- Query function
+- Operation types
+- libcrypto / core upcalls
+- Getting config data
+- Provider context
+- Error handling
+- Library contexts - self-contained model
+- Library contexts - inheriting child model
