@@ -1,14 +1,13 @@
 CC=clang
 
-%.so: %.o
-	$(CC) -shared $(LDFLAGS) $(LDLIBS) -o $@ $+
-
-all: helloworld.so
-helloworld.so: LDFLAGS=-Wl,--export-dynamic-symbol=OSSL_provider_init
-helloworld.o: CFLAGS=-g -O0 -fPIC
+all: myapp
+myapp: LDLIBS=-lcrypto
+myapp: myapp.o helloworld.o
+helloworld.o: CFLAGS=-DOSSL_provider_init=my_prov_init
+helloworld.o: helloworld.c
 
 try:
-	OPENSSL_MODULES=. openssl list -provider helloworld -verbose
+	./myapp
 
 clean:
-	rm *.so *.o
+	rm *.o myapp
