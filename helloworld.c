@@ -3,14 +3,18 @@
 #include <stdlib.h>
 #include <openssl/core.h>
 #include <openssl/core_dispatch.h>
+#include <openssl/crypto.h>
 
 struct provctx_st {
-    int dummy;
+    OSSL_LIB_CTX *libctx;
 };
 
 static OSSL_FUNC_provider_teardown_fn teardown;
 void teardown(void *provctx)
 {
+    struct provctx_st *pctx = provctx;
+
+    OSSL_LIB_CTX_free(pctx->libctx);
     free(provctx);
 }
 
@@ -25,12 +29,22 @@ int OSSL_provider_init(const OSSL_CORE_HANDLE *handle,
                        const OSSL_DISPATCH **out,
                        void **provctx)
 {
-    fprintf(stderr, "nonsense: Hello, world!\n");
-
     struct provctx_st *pctx = malloc(sizeof(struct provctx_st));
 
     memset(pctx, 0, sizeof(*pctx));
     *provctx = pctx;
     *out = provfns;
+
+    /*
+     * A library context that inherits loaded providers from the calling
+     * application
+     */
+    pctx->libctx = OSSL_LIB_CTX_new_child(handle, in);
+    if (pctx->libctx == NULL) {
+        teardown(*provctx);
+        *provctx = NULL;
+        return 0;
+    }
+
     return 1;
 }
